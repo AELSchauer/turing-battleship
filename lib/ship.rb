@@ -1,8 +1,12 @@
 class Ship
 
-  def initialize(ship_name,size)
-    @name         = ship_name
-    @short_hand   = ship_name[0]
+  attr_reader :ship_name,
+              :abbv,
+              :size
+
+  def initialize(ship_name, size)
+    @ship_name    = ship_name
+    @abbv         = ship_name[0]
     @size         = size
     @current_hits = []
     @sunk         = false

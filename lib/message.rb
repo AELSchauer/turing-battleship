@@ -1,46 +1,51 @@
-require 'colorize'
-
 class Message
 
   def welcome
-    "Welcome to BATTLESHIP"
+    # trailing(3)
+    puts "Welcome to BATTLESHIP"
+    # trailing(2)
   end
 
   def welcome_instructions
-    "Would you like to (p)lay, read the (i)nstructions, or (q)uit?"
+    puts "Would you like to (p)lay, read the (i)nstructions, or (q)uit?"
   end
 
   def starting_ship_placement(ships)
-    instructions.push("AI player has laid out their ships on the grid.")
-    instructions.push("You now need to layout your #{ships.length} ships.")
-    ships.each do |ship|
-      instructions.push("     #{ship.name} (#{ship.size} units)")
-    end
-    instructions.join("\n")
+    "AI player has laid out their ships on the grid." +
+    "You now need to layout your #{ships.length} ships." +
+    ships.map { |ship| "#{indent}#{ship.name} (#{ship.size} units)" }.join
+    # ships.map do |ship|
+    #   indent + "#{ship.name} (#{ship.size} units)"
+    # end
   end
 
-  def player_ship_placement(ships, grid)
-    instructions.push("Here is the grid layout:")
-    instructions.push(grid.display_grid(true))
-    instructions.push()
-    instructions.push("Enter the squares for the #{ships.name}:")
-    instructions.join("\n")
+  def player_ship_placement(ship, grid)
+    puts "Here is your grid layout:"
+    puts grid.display_grid(true)
+    puts ""
+    puts "Enter the coordinates for the bow of the #{ship.name} (#{ship.size} units) and (h)orizontal or (v)ertical:"
   end
 
   def game_instructions
-    "PUT INSTRUCTIONS HERE\n.\n.\n."
+    puts "PUT INSTRUCTIONS HERE."
+    # trailing(3)
   end
 
   def select_difficulty
-    "Please select a difficulty: (b)eginner, (i)ntermediate, (a)dvanced"
+    puts "Please select a difficulty: (b)eginner, (i)ntermediate, (a)dvanced"
   end
 
   def selection_error(selection)
-    "Your selection of '#{selection}' was incorrect. Please make a correct selection.\n."
+    puts "Your selection of '#{selection}' was incorrect. Please make a correct selection."
+    puts "."
   end
 
   def game_quit
-    ".\n.\n.\nThank you for playing!\n.\n."
+    puts "\n\n\nThank you for playing!\n\n"
+  end
+
+  def trailing(n)
+    n.times { puts "" }
   end
 
 end

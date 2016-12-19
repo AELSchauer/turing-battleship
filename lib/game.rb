@@ -3,64 +3,93 @@ require './lib/message'
 
 class Game
 
-  attr_reader :player,
-              :computer
+  attr_reader :player_main,
+              :player_tracker,
+              :computer_main,
+              :computer_tracker
 
   def initialize
     @message = Message.new
   end
 
   def welcome
-    p @message.welcome
+    puts @message.welcome
     welcome_instructions
   end
 
   def welcome_instructions
-    p @message.welcome_instructions
+    puts @message.welcome_instructions
     selection = get_selection
-    if selection == "i"
+    case selection
+    when "i"
       game_instructions
-    elsif selection == "p"
+    when "p"
       select_difficulty
-    elsif selection == "q"
+    when "q"
       game_exit
     else
-      p @message.selection_error(selection)
+      puts @message.selection_error(selection)
       welcome_instructions
     end
   end
 
   def select_difficulty
-    p @message.select_difficulty
+    puts @message.select_difficulty
     selection = get_selection
-    if ["b","i","a"].include?(selection)
-      if selection == "b"
-        size = 4
-        ships = [ Ships.new("Destroyer", 2),
-                  Ships.new("Cruiser",   3) ]
-      end
-      if selection == "i"
-        size = 8
-        ships = [ Ships.new("Destroyer",  2),
-                  Ships.new("Cruiser",    3),
-                  Ships.new("Battleship", 4) ]
-      elsif selection == "a"
-        size = 12
-        ships = [ Ships.new("Destroyer",  2),
-                  Ships.new("Cruiser",    3),
-                  Ships.new("Battleship", 4),
-                  Ships.new("Carrier",    5) ]
-      end
-      @player = Grid.new(size)
-      @computer = Grid.new(size)
-      start_game
+    case selection
+    when "b"
+      size = 4
+      ships = [ ["Destroyer",   2],
+                ["Cruiser",     3]
+              ]
+      game_setup(size, ships)
+    when "i"
+      size = 8
+      ships = [ ["Destroyer",   2],
+                ["Cruiser",     3],
+                ["Battleship",  4]
+              ]
+      game_setup(size, ships)
+    when "a"
+      size = 8
+      ships = [ ["Destroyer",   2],
+                ["Cruiser",     3],
+                ["Battleship",  4],
+                ["Carrier",     5]
+              ]
+      game_setup(size, ships)
     else
-      p @message.selection_error(selection)
+      puts @message.selection_error(selection)
       select_difficulty
     end
   end
 
-  def start_game
+  def game_setup(size, ships)
+    computer_setup(size, ships)
+    player_setup(size, ships)
+  end
+
+  def start_play
+    # computer sets board
+    # player sets board
+  end
+
+  def player_setup(size, ships)
+    @player_main = Grid.new(size,"Player")
+    @player_main.get_ships(ships)
+    @player_tracker = Grid.new(size,"Player Tracker")
+  end
+
+  def computer_setup(size, ships)
+    @computer_main = Grid.new(size,"Computer")
+    @computer_main.get_ships(ships)
+    @computer_main.ships.each do |ship|
+      while true
+        break unless @computer_main.place_ship
+      end
+    end
+    @computer_main.display_grid
+    @computer_tracker = Grid.new(size,"Computer Tracker")
   end
 
   def get_selection
@@ -68,7 +97,7 @@ class Game
   end
 
   def game_instructions
-    @message.game_instructions
+    puts @message.game_instructions
     welcome_instructions
   end
 
@@ -79,7 +108,7 @@ class Game
   end
 
   def game_exit
-    p @message.game_quit
+    puts @message.game_quit
     false
   end
 
