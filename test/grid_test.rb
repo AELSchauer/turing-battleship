@@ -1,53 +1,38 @@
+require 'simplecov'
+SimpleCov.start
+
 require 'pry'
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/grid'
 require './lib/ship'
+require './lib/peg'
 
 class GridTest < Minitest::Test
 
   def test_exists
-    skip
+    # skip
     assert true
   end
 
   def test_grid_exists
-    skip
+    # skip
     grid = Grid.new(4)
 
-    assert_equal true, grid
-    assert_equal 4,    grid.size
+    assert                  grid
+    assert_equal 4,         grid.size
+    assert_equal "Player",  grid.owner
   end
 
-  def test_get_hash_for_rows
-    skip
-    grid = Grid.new(4)
-    hash_1 = {1=>".", 2=>".", 3=>".", 4=>"."}
-
-    hash_t = grid.get_hash(1)
-
-    assert_equal hash_1, hash_t
-  end
-
-  def test_get_hash_for_columns
-    skip
-    grid = Grid.new(4)
-    hash_1 = {"A"=>".", "B"=>".", "C"=>".", "D"=>"."}
-
-    hash_t = grid.get_hash("A")
-
-    assert_equal hash_1, hash_t
-  end
-
-  def test_create_grid
-    skip
+  def test_create_matrix
+    # skip
     grid = Grid.new(4)
     grid_layout =
-      { 1=>{"A"=>".", "B"=>".", "C"=>".", "D"=>"."},
-        2=>{"A"=>".", "B"=>".", "C"=>".", "D"=>"."},
-        3=>{"A"=>".", "B"=>".", "C"=>".", "D"=>"."},
-        4=>{"A"=>".", "B"=>".", "C"=>".", "D"=>"."}
-      }
+      [ ["","","",""],
+        ["","","",""],
+        ["","","",""],
+        ["","","",""]
+      ]
 
     grid_test = grid.create_matrix
 
@@ -55,20 +40,20 @@ class GridTest < Minitest::Test
   end
 
   def test_create_grid_automatically
-    skip
+    # skip
     grid = Grid.new(4)
     grid_layout =
-      { 1=>{"A"=>".", "B"=>".", "C"=>".", "D"=>"."},
-        2=>{"A"=>".", "B"=>".", "C"=>".", "D"=>"."},
-        3=>{"A"=>".", "B"=>".", "C"=>".", "D"=>"."},
-        4=>{"A"=>".", "B"=>".", "C"=>".", "D"=>"."}
-      }
+      [ ["","","",""],
+        ["","","",""],
+        ["","","",""],
+        ["","","",""]
+      ]
 
     assert_equal grid_layout, grid.matrix
   end
 
   def test_outline_below_9
-    skip
+    # skip
     grid = Grid.new(4)
 
     line = "=" * 12
@@ -77,7 +62,7 @@ class GridTest < Minitest::Test
   end
 
   def test_outline_above_9
-    skip
+    # skip
     grid = Grid.new(10)
 
     line = "=" * 24
@@ -86,7 +71,7 @@ class GridTest < Minitest::Test
   end
 
   def test_column_labels_below_9
-    skip
+    # skip
     grid = Grid.new(4)
 
     labels = "   A B C D"
@@ -95,7 +80,7 @@ class GridTest < Minitest::Test
   end
 
   def test_column_labels_above_9
-    skip
+    # skip
     grid = Grid.new(10)
 
     labels = "   A B C D E F G H I J"
@@ -104,33 +89,33 @@ class GridTest < Minitest::Test
   end
 
   def test_grid_values_below_9
-    skip
+    # skip
     grid = Grid.new(4)
     vals = " ." * 4
 
-    assert_equal vals, grid.display_values(1)
+    assert_equal vals, grid.display_values(grid.matrix[1])
   end
 
   def test_grid_values_above_9
-    skip
+    # skip
     grid = Grid.new(11)
     vals = " ." * 11
 
-    assert_equal vals, grid.display_values(1)
+    assert_equal vals, grid.display_values(grid.matrix[1])
   end
 
   def test_grid_values_with_hits_and_misses   # update this test once hit or miss functionality has been added
-    skip
+    # skip
     grid = Grid.new(6)
-    grid.matrix[1]["B"] = "H"
-    grid.matrix[1]["D"] = "M"
-    vals = " . H . M . ."
+    grid.matrix[1][2] = Peg.new("Hit")
+    grid.matrix[1][4] = Peg.new("Miss")
+    vals = " . . H . M ."
 
-    assert_equal vals, grid.display_values(1)
+    assert_equal vals, grid.display_values(grid.matrix[1])
   end
 
   def test_row_labels_and_values_below_9
-    skip
+    # skip
     grid = Grid.new(4)
     vals = []
     vals.push(" 1 . . . .")
@@ -141,8 +126,8 @@ class GridTest < Minitest::Test
     assert_equal vals, grid.row_labels_and_values
   end
 
-  def test_display_matrix_small_indent
-    skip
+  def test_display_matrix_small
+    # skip
     grid = Grid.new(4)
     grid_string =
       "============" + "\n" +
@@ -156,7 +141,8 @@ class GridTest < Minitest::Test
     assert_equal grid_string, grid.display_grid
   end
 
-  def test_display_matrix_large_indent
+  def test_display_matrix_large
+    # skip
     grid = Grid.new(12)
     grid_string =
       "============================" + "\n" +
@@ -178,54 +164,9 @@ class GridTest < Minitest::Test
     assert_equal grid_string, grid.display_grid
   end
 
-  def test_coordinate_selection
-    grid = Grid.new(12)
-
-    row, col, pos = grid.coordinates_selection
-
-    assert_equal true, (1..12).include?(row)
-    assert_equal true, ("A".."L").include?(col)
-    assert_equal true, ["h","v"].include?(pos)
-  end
-
-  def test_ship_placement_off_board_vertical
-    grid = Grid.new(4)
-    ship = Ship.new("Destroyer", 2)
-
-    place = grid.check_ship_placement(ship, 4, "A", "v")
-
-    assert_equal false, place
-  end
-
-  def test_ship_placement_not_off_board_vertical
-    grid = Grid.new(4)
-    ship = Ship.new("Destroyer", 2)
-
-    place = grid.check_ship_placement(ship, 3, "A", "v")
-
-    assert_equal true, place
-  end
-
-  def test_ship_placement_off_board_horizontal
-    grid = Grid.new(4)
-    ship = Ship.new("Destroyer", 2)
-
-    place = grid.check_ship_placement(ship, 1, "D", "h")
-
-    assert_equal false, place
-  end
-
-  def test_ship_placement_not_off_board_horizontal
-    grid = Grid.new(4)
-    ship = Ship.new("Destroyer", 2)
-
-    place = grid.check_ship_placement(ship, 1, "C", "h")
-
-    assert_equal true, place
-  end
-
   def test_coordinates_valid
-    grid = Grid.new(4)
+    # skip
+    grid = Grid.new(6)
     ship = Ship.new("Submarine", 3)
     coordinates = [[1, 3], [3, 3]]
 
@@ -233,7 +174,8 @@ class GridTest < Minitest::Test
   end
 
   def test_coordinates_not_valid
-    grid = Grid.new(4)
+    # skip
+    grid = Grid.new(6)
     ship = Ship.new("Submarine", 3)
     coordinates = [[1, 3], [-1, 3]]
 
@@ -241,7 +183,8 @@ class GridTest < Minitest::Test
   end
 
   def test_ship_coordinates_horizontal_forward
-    grid = Grid.new(4)
+    # skip
+    grid = Grid.new(6)
     coordinates = [[1, 3], [4, 3]]
 
     expected_coordinates  = [[1, 3], [2, 3], [3, 3], [4, 3]]
@@ -251,7 +194,8 @@ class GridTest < Minitest::Test
   end
 
   def test_ship_coordinates_horizontal_backward
-    grid = Grid.new(4)
+    # skip
+    grid = Grid.new(6)
     coordinates = [[4, 3], [1, 3]]
 
     expected_coordinates  = [[1, 3], [2, 3], [3, 3], [4, 3]]
@@ -261,7 +205,8 @@ class GridTest < Minitest::Test
   end
 
   def test_ship_coordinates_vertical_forward
-    grid = Grid.new(4)
+    # skip
+    grid = Grid.new(6)
     coordinates = [[3, 1], [3, 4]]
 
     expected_coordinates  = [[3, 1], [3, 2], [3, 3], [3, 4]]
@@ -271,7 +216,8 @@ class GridTest < Minitest::Test
   end
 
   def test_ship_coordinates_vertical_backward
-    grid = Grid.new(4)
+    # skip
+    grid = Grid.new(6)
     coordinates = [[3, 4], [3, 1]]
 
     expected_coordinates = [[3, 1], [3, 2], [3, 3], [3, 4]]
@@ -281,7 +227,8 @@ class GridTest < Minitest::Test
   end
 
   def test_coordinates_empty
-    grid = Grid.new(4)
+    # skip
+    grid = Grid.new(6)
     coordinates_s1 = [[1, 3], [4, 3]]
     coordinates_s2 = [[3, 1], [3, 4]]
 
@@ -293,7 +240,8 @@ class GridTest < Minitest::Test
   end
 
   def test_coordinates_not_empty
-    grid = Grid.new(4)
+    # skip
+    grid = Grid.new(6)
     ship = Ship.new("Battleship", 4)
     grid.matrix[3][3] = ship
     coordinates_s1 = [[3, 1], [3, 4]]
@@ -303,29 +251,43 @@ class GridTest < Minitest::Test
     assert_equal false, grid.coordinates_empty?(coordinates_l1)
   end
 
-  # def test_add_ships
-  #   grid = Grid.new(12)
-  #   ships = [ ["Destroyer",   2],
-  #             ["Cruiser",     3],
-  #             ["Battleship",  4],
-  #             ["Carrier",     5]
-  #           ]
+  def test_add_ships
+    # skip
+    grid = Grid.new(12)
+    ships = [ ["Destroyer",   2],
+              ["Cruiser",     3],
+              ["Battleship",  4],
+              ["Carrier",     5]
+            ]
 
-  #   grid.add_ships(ships)
+    grid.grab_ships(ships)
 
-  #   assert_equal "Destroyer",   grid.ships[0].ship_name
-  #   assert_equal "Cruiser",     grid.ships[1].ship_name
-  #   assert_equal "Battleship",  grid.ships[2].ship_name
-  #   assert_equal "Carrier",     grid.ships[3].ship_name
-  # end
+    assert_equal "Destroyer",   grid.ships[0].name
+    assert_equal "Cruiser",     grid.ships[1].name
+    assert_equal "Battleship",  grid.ships[2].name
+    assert_equal "Carrier",     grid.ships[3].name
+  end
 
-  # def test_place_ship
-  #   grid = Grid.new(4)
-  #   ship = Ship.new("Destroyer", 2)
+  def test_place_ship
+    # skip
+    grid = Grid.new(5)
+    ship = Ship.new("Destroyer", 4)
+    coordinates = grid.ship_coordinates([[3, 1], [3, 4]])
+    grid_string =
+      "==============" + "\n" +
+      "   A B C D E"   + "\n" +
+      " 1 . . . . ."   + "\n" +
+      " 2 . . . . ."   + "\n" +
+      " 3 . . . . ."   + "\n" +
+      " 4 . D D D D"   + "\n" +
+      " 5 . . . . ."   + "\n" +
+      "=============="
 
-  #   puts grid.place_ship(ship, 1, "A", "h")
-  #   puts grid.place_ship(ship, 4, "D", "v")
-  # end
+    grid.place_ship(ship, coordinates)
+
+    assert_equal grid.display_grid, grid_string
+
+  end
 
   # The process of setting up the board for the computer:
   # 1) Create the main board
