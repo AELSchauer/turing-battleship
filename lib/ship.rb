@@ -12,6 +12,10 @@ class Ship
     @sunk = false
   end
 
+  def human_selects_coordinates
+    UserInput.new.coordinate_selection(@size, 2)
+  end
+
   def computer_selects_coordinates(coordinates)
     x, y = coordinates
     s = @size - 1

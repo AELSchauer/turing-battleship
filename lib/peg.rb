@@ -3,10 +3,14 @@ class Peg
   attr_reader :name,
               :abbv
 
-  def initialize(name)
+  def initialize(name=nil)
     @name = name
-    @abbv = @name[0]
+    @abbv = get_abbv
   end
 
+  def get_abbv
+    return "." if @name.nil?
+    @name[0]
+  end
 
 end
