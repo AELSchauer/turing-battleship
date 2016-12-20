@@ -1,5 +1,6 @@
-require './lib/grid'
+require './lib/player'
 require './lib/message'
+require 'pry'
 
 class Game
 
@@ -12,104 +13,135 @@ class Game
     @message = Message.new
   end
 
-  def welcome
-    puts @message.welcome
-    welcome_instructions
-  end
+  # def get_selection
+  #   gets.upcase.gsub("\n","")
+  # end
 
-  def welcome_instructions
-    puts @message.welcome_instructions
-    selection = get_selection
-    case selection
-    when "i"
-      game_instructions
-    when "p"
-      select_difficulty
-    when "q"
-      game_exit
-    else
-      puts @message.selection_error(selection)
-      welcome_instructions
-    end
-  end
+  ##### Game Start
 
-  def select_difficulty
-    puts @message.select_difficulty
-    selection = get_selection
-    case selection
-    when "b"
-      size = 4
-      ships = [ ["Destroyer",   2],
-                ["Cruiser",     3]
-              ]
-      game_setup(size, ships)
-    when "i"
-      size = 8
-      ships = [ ["Destroyer",   2],
-                ["Cruiser",     3],
-                ["Battleship",  4]
-              ]
-      game_setup(size, ships)
-    when "a"
-      size = 8
-      ships = [ ["Destroyer",   2],
-                ["Cruiser",     3],
-                ["Battleship",  4],
-                ["Carrier",     5]
-              ]
-      game_setup(size, ships)
-    else
-      puts @message.selection_error(selection)
-      select_difficulty
-    end
-  end
+  # def game_start_welcome
+  #   puts @message.welcome
+  #   welcome_instructions
+  # end
 
-  def game_setup(size, ships)
-    computer_setup(size, ships)
-    player_setup(size, ships)
-  end
+  # def game_start_menu
+  #   puts @message.welcome_instructions
+  #   selection = get_selection
+  #   case selection
+  #   when "I"
+  #     game_instructions
+  #   when "P"
+  #     select_difficulty
+  #   when "Q"
+  #     game_exit
+  #   else
+  #     puts @message.selection_error(selection)
+  #     welcome_instructions
+  #   end
+  # end
 
-  def start_play
-    # computer sets board
-    # player sets board
-  end
+  #### Game Instructions
 
-  def player_setup(size, ships)
-    @player_main = Grid.new(size,"Player")
-    @player_main.get_ships(ships)
-    @player_tracker = Grid.new(size,"Player Tracker")
-  end
+  # def game_instructions
+  #   puts @message.game_instructions
+  #   welcome_instructions
+  # end
 
-  def computer_setup(size, ships)
-    @computer_main = Grid.new(size,"Computer")
-    @computer_main.get_ships(ships)
-    @computer_main.ships.each do |ship|
-      while true
-        break unless @computer_main.place_ship
-      end
-    end
-    @computer_main.display_grid
-    @computer_tracker = Grid.new(size,"Computer Tracker")
-  end
 
-  def get_selection
-    gets.downcase.gsub("\n","")
-  end
+  #### Game Setup
 
-  def game_instructions
-    puts @message.game_instructions
-    welcome_instructions
-  end
+  # def game_setup
+  #   size, ships = select_difficulty
+  #   computer_setup(size, ships)
+  #   human_setup(size, ships)
+  #   start_game
+  # end
 
-  def play_again?
-    #if you want to play again, output to true
-    #if don't want to play again, go to game exit (output = false)
-    game_exit
-  end
+  # def select_difficulty
+  #   puts @message.select_difficulty
+  #   selection = get_selection
+  #   case selection
+  #   when "B"
+  #     size = 4
+  #     ships = [ ["Destroyer",   2],
+  #               ["Cruiser",     3]
+  #             ]
+  # #     game_setup(size, ships)
+  #       return size, ships
+  #   when "I"
+  #     size = 8
+  #     ships = [ ["Destroyer",   2],
+  #               ["Cruiser",     3],
+  #               ["Battleship",  4]
+  #             ]
+  # #     game_setup(size, ships)
+  #       return size, ships
+  #   when "A"
+  #     size = 8
+  #     ships = [ ["Destroyer",   2],
+  #               ["Cruiser",     3],
+  #               ["Battleship",  4],
+  #               ["Carrier",     5]
+  #             ]
+  # #     game_setup(size, ships)
+  #       return size, ships
+  #   else
+  #     puts @message.selection_error(selection)
+  #     select_difficulty
+  #   end
+  # end
 
-  def game_exit
-    puts @message.game_quit
-    false
-  end
+  # def human_setup(size, ships)
+  #   # add a message prompting the user for their name
+  #   user_name = get_selection
+  #   @computer = Player.new(user_name, false)    #creates player
+  #   @computer.board_setup(size, ships)          #creates board
+  #   # add ships to the board
+  # end
+
+  # def computer_setup(size, ships)
+  #   @computer = Player.new("Computer", true)    #creates player
+  #   @computer.board_setup(size, ships)          #creates board
+  #   # add ships to the board
+  # end
+
+
+  ##### Play Game
+
+  # def start_game
+  #   # start game timer
+  #   # game_sequence
+  # end
+
+  # def game_sequence
+  #   # computer takes their turn
+  #   # human takes their turn
+  #   # for each player, count number of turns
+  #   # after each turn, check if the game is won
+  # end
+
+
+  #### End the Game
+
+  # def end_game
+  #   # send sorry or congratulations message depending on who won
+  #   # output the total time it took to play the game
+  #   # output the number of turns it took the winner to win
+  # end
+
+  # def play_again?
+  #   #if you want to play again, output to true
+  #   #if don't want to play again, go to game exit (output = false)
+  #   game_exit
+  # end
+
+
+  #### Quit Game
+
+  # def game_exit
+  #   puts @message.game_quit
+  #   false
+  # end
+
 
 end

@@ -1,4 +1,5 @@
-require "pry"
+require './lib/ship'
+require 'pry'
 
 class Grid
 
@@ -16,45 +17,48 @@ class Grid
   end
 
   def create_matrix
-    cols = get_hash("A")
-    get_hash(1,cols)
+    cols = get_hash
+    get_hash(cols)
   end
 
-  def get_hash(character, value=".")
+  def get_hash(value="")
+    key = 0
     @size.times.reduce({}) do |h|
-      h[character] = value
-      character = character.next
+      h[key += 1] = value
       h
     end
   end
 
-  def place_ship(ship, *coordinates)
-    coordinates = coordinates_selection if coordinates.empty?
-    row, col, pos = coordinates
-    return false unless check_ship_placement(ship, row, col, pos)
+  def place_ship(ship)
+
+  end
+
+  def coordinates_valid?(coordinates)
+    coordinates.each do |x, y|
+      return false if @matrix[y].nil?
+      return false if @matrix[y][x].nil?
+    end
     true
-    # unless check_ship_placement(ship, row, col, pos)
-    #   place_ship(ship)
-    # end
-
   end
 
-  def coordinates_selection
-    row = @matrix.keys.sample
-    col = @matrix[row].keys.sample
-    pos = ["h","v"].sample
-    return row, col, pos
+  def ship_coordinates(coordinates)
+    x_points = coordinates.map { |(x, y)| x }.sort
+    y_points = coordinates.map { |(x, y)| y }.sort
+    if x_points.uniq.length == 1
+      y = (y_points[0]..y_points[-1]).to_a
+      x = Array.new(y.length, x_points[0])
+    elsif y_points.uniq.length == 1
+      x = (x_points[0]..x_points[-1]).to_a
+      y = Array.new(x.length, y_points[0])
+    end
+    x.pop ; x.shift
+    y.pop ; y.shift
+    coordinates.concat(x.zip(y)).sort
   end
 
-  def check_ship_placement(ship, row, col, pos)
-    ship.size.times do |i|
-      if pos == "v"
-        return false if @matrix[row+i].nil?
-        return false unless @matrix[row+i][col] == "."
-      elsif pos == "h"
-        return false if @matrix[row][(col.ord+i).chr].nil?
-        return false unless @matrix[row][(col.ord+i).chr] == "."
-      end
+  def coordinates_empty?(coordinates)
+    coordinates.each do |x, y|
+      return false if @matrix[y][x].class == Ship
     end
     true
   end
