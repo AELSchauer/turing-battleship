@@ -1,4 +1,4 @@
-class Peg
+   class Peg
 
   attr_reader :name,
               :abbv
