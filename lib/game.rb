@@ -8,7 +8,6 @@ class Game
               :computer
 
   def initialize
-    @message = Message.new
   end
 
   def get_selection
@@ -18,12 +17,12 @@ class Game
   #### Game Start
 
   def game_start_welcome
-    puts @message.welcome
+    Message.welcome
     game_start_menu
   end
 
   def game_start_menu
-    puts @message.welcome_instructions
+    Message.welcome_instructions
     selection = get_selection
     case selection
     when "I"
@@ -33,7 +32,7 @@ class Game
     when "Q"
       game_exit
     else
-      puts @message.selection_error(selection)
+      Message.selection_error(selection)
       welcome_instructions
     end
   end
@@ -41,7 +40,7 @@ class Game
   #### Game Instructions
 
   def game_instructions
-    puts @message.game_instructions
+    Message.game_instructions
     game_start_menu
   end
 
@@ -56,7 +55,7 @@ class Game
   end
 
   def select_difficulty
-    puts @message.select_difficulty
+    Message.select_difficulty
     selection = get_selection
     case selection
     when "B"
@@ -64,18 +63,16 @@ class Game
       ships = [ ["Destroyer",   2],
                 ["Cruiser",     3]
               ]
-        human_setup(size, ships)
-        computer_setup(size, ships)
-        return size, ships
+      human_setup(size, ships)
+      computer_setup(size, ships)
     when "I"
       size = 8
       ships = [ ["Destroyer",   2],
                 ["Cruiser",     3],
                 ["Battleship",  4]
               ]
-        human_setup(size, ships)
-        computer_setup(size, ships)
-        return size, ships
+      human_setup(size, ships)
+      computer_setup(size, ships)
     when "A"
       size = 8
       ships = [ ["Destroyer",   2],
@@ -83,17 +80,16 @@ class Game
                 ["Battleship",  4],
                 ["Carrier",     5]
               ]
-        human_setup(size, ships)
-        computer_setup(size, ships)
-        return size, ships
+      human_setup(size, ships)
+      computer_setup(size, ships)
     else
-      puts @message.selection_error(selection)
+      Message.selection_error(selection)
       select_difficulty
     end
   end
 
   def human_setup(size, ships)
-    @message.get_human_name
+    Message.get_human_name
     user_name = get_selection
     @human = Player.new(user_name, false)    #creates player
     @human.board_setup(size, ships)          #creates board
@@ -102,6 +98,7 @@ class Game
   def computer_setup(size, ships)
     @computer = Player.new("Computer", true)    #creates player
     @computer.board_setup(size, ships)          #creates board
+    Message.computer_setup_complete
   end
 
 
@@ -138,7 +135,7 @@ class Game
   #### Quit Game
 
   def game_exit
-    puts @message.game_quit
+    Message.game_quit
     false
   end
 

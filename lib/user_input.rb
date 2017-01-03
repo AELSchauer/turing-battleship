@@ -1,4 +1,5 @@
 require 'pry'
+require './lib/message'
 
 class UserInput
 
@@ -29,12 +30,19 @@ class UserInput
   def coordinate_selection(number_needed)
     return false unless coordinate_all_characters_valid?
     valid_sets = coordinate_scan_for_valid_sets
-    return false unless valid_sets.length == number_needed
+    unless valid_sets.length == number_needed
+      Message.argument_mismatch(number_needed, valid_sets.length)
+      return false
+    end
     valid_sets
   end
 
   def coordinate_all_characters_valid?
-    return false unless @input.scan(/[^A-Z0-9 ]/).empty?
+    input_scan = @input.scan(/[^A-Z0-9 ]/)
+    unless input_scan.empty?
+      Message.invalid_characters(input_scan)
+      return false
+    end
     true
   end
 

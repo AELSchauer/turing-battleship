@@ -10,7 +10,8 @@ class Grid
 
   attr_reader :matrix,
               :ships,
-              :size
+              :size,
+              :type
 
   attr_writer :matrix  #TEMPORARY UNTIL HIT OR MISS FUNCTIONALITY IS ADDED
 
@@ -33,12 +34,6 @@ class Grid
   end
 
   def get_ship_coordinates(ship)
-    # are the ship coordinates nil? (no testing input)
-      # if yes, generate ship coordinates (input from user or random for computer)
-      # if no, those coordinates should be a string input
-    # is there already a ship at those coordinates?
-      # if yes, set ship coordinates to nil, give error message, and return false to run again
-      # if no, return the coordinates
     if ship.coordinates.nil?
       generator = CoordinatesGenerator.new(@size)
     else
@@ -54,10 +49,8 @@ class Grid
       generator.coordinates
     else
       ship.coordinates = nil
-      Message.coordinates_not_empty
       false
     end
-
   end
 
   def place_ships_on_board
@@ -68,13 +61,17 @@ class Grid
       end
       place_object(ship, coordinates)
     end
+    Message.show_board_to_human_player(self) unless @player_ai
   end
 
   def coordinates_empty?(coordinates)
     return false unless coordinates
     return false if coordinates.class == String
     coordinates.each do |r, c|
-      return false unless @matrix[r][c].abbv == "."
+      unless @matrix[r][c].abbv == "."
+        Message.coordinates_not_empty
+        return false
+      end
     end
     true
   end
